@@ -13,29 +13,39 @@ var tileMap;
 var enemigo = [];
 var imagenAntorcha;
 
-var sonido1, sonido2, sonido3;
-var musica;
+var camara2;
+var camara;
 
-musica = new Howl({
-  src: ["music/01.mp3"],
-  loop: true,
-});
+//Para la camara
+var anchoEscenario = 25;
+var altoEscenario = 20;
 
-sonido1 = new Howl({
-  src: ["sound/efecto1.wav"],
-  loop: false,
-});
-
-sonido2 = new Howl({
-  src: ["sound/efecto2.wav"],
-  loop: false,
-});
-
-sonido3 = new Howl({
-  src: ["sound/efecto3.wav"],
-  loop: false,
-});
-
+var ObjCamara = function (x, y, tamX, tamY, posX, posY) {
+  this.x = x;
+  this.y = y;
+  this.tamX = tamX;
+  this.tamY = tamY;
+  this.posX = posX;
+  this.posY = posY;
+  this.dibuja = () => {
+    for (y = this.y; y < this.tamY + this.y; y++) {
+      for (x = this.x; x < this.tamX + this.x; x++) {
+        var tile = escenario[y][x];
+        ctx.drawImage(
+          tileMap,
+          tile * 32,
+          0,
+          32,
+          32,
+          anchoF * (x - this.x + this.posX),
+          altoF * (y - this.y + this.posY),
+          anchoF,
+          altoF
+        );
+      }
+    }
+  };
+};
 //objeto antorcha
 var antorcha = function (x, y) {
   this.x = x;
@@ -144,6 +154,9 @@ var malo = function (x, y) {
   };
 };
 
+//Objeto Camara
+camara = new ObjCamara(2, 2, 5, 5, 1, 1);
+camara2 = new ObjCamara(3, 4, 6, 5, 8, 2);
 //Objeto jugador
 var jugador = function () {
   this.x = 8;
@@ -227,7 +240,6 @@ var jugador = function () {
     if (objeto == 3) {
       this.llave = true;
       escenario[this.y][this.x] = 2;
-      sonido3.play();
       console.log("Has obtenido la llave!! :)");
     }
     if (objeto == 1) {
@@ -245,7 +257,6 @@ var jugador = function () {
 };
 
 function inicializar() {
-  musica.play();
   canvas = document.getElementById("canvas");
   ctx = canvas.getContext("2d");
   tileMap = new Image();
@@ -267,21 +278,15 @@ function inicializar() {
     switch (tecla.keyCode) {
       case 38:
         protagonista.arriba();
-        sonido1.play();
         break;
       case 40:
         protagonista.abajo();
-        sonido2.play();
         break;
       case 37:
         protagonista.izquierda();
-        sonido1.play();
-
         break;
       case 39:
         protagonista.derecha();
-        sonido2.play();
-
         break;
 
       default:
@@ -294,7 +299,9 @@ function inicializar() {
 
 function principal() {
   borrarCanvas();
-  dibujaEscenario();
+  camara.dibuja();
+  camara2.dibuja();
+  //dibujaEscenario();
   protagonista.dibuja();
   for (var i = 0; i < enemigo.length; i++) {
     enemigo[i].dibuja();
@@ -323,7 +330,7 @@ var escenario = [
   [0, 2, 2, 3, 0, 0, 0, 2, 2, 2, 0, 2, 2, 1, 0],
   [0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0],
 ];
-
+/*
 function dibujaEscenario() {
   for (y = 0; y < 10; y++) {
     for (x = 0; x < 15; x++) {
@@ -342,3 +349,4 @@ function dibujaEscenario() {
     }
   }
 }
+*/
